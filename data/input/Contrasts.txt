@@ -1,0 +1,9 @@
+Condition	Mmp_1vsMmr_1	Mmp_2vsMmr_2	Mmp_aavsMmr_aa	MmpvsMmr	WD1_MmrvsWD2_Mmr	WD1_MmpvsWD2_Mmp	WD1vsWD2
+Mmp_aa	0	0	+	+	0	0	0
+Mmp_wd1	+	0	0	+	0	+	+
+Mmp_wd2	0	+	0	+	0	-	-
+Mmr_aa	0	0	-	-	0	0	0
+Mmr_wd1	-	0	0	-	+	0	+
+Mmr_wd2	0	-	0	-	-	0	-
+
+
