@@ -16,7 +16,7 @@ You'll find the Melinaea data in the **data/input** folder.
 
 
 ### Download and Run 
-You can clone this repository, then run with Rscript or within Rstudio or your favorite R environment (including the AskoR dependencies) the  R script file (see _scriptR/AskoR_analysis_script.R_):  
+You can clone this repository, then run with Rscript or within Rstudio or your favorite R environment (including the AskoR dependencies) the  R script file (see _ScriptR/AskoR_analysis_script.R_):  
 
 ### License
 
