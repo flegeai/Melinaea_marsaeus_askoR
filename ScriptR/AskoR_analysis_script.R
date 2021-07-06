@@ -1,44 +1,43 @@
-# Removes all objects from the current workspace (R memory)
 rm(list=ls())
-
 # source AskoR.R file
-source("/directory/where/you/downloaded/the/file/AskoR.R")
-# defined your workspace
-setwd("/path/to/workspace/")
+source("AskoR.R")
+parameters<-Asko_start()
 
 ##############################################
 ##                Parameters                ##
 ##############################################
-parameters<-Asko_start()
 
 # Data and input files descriptions
 #--------------------------------------------------------------------------
 # WARNING: All the input files must be in the same folder
 #          called "input" (case sensitive)!
 #--------------------------------------------------------------------------
-parameters$analysis_name = "DEG_testPack"             # output directory name (default AskoRanalysis, do not put space!)
-parameters$fileofcount = "CountsMatrix.txt"           # matrix of count for all samples/conditions
-parameters$sep = "\t"                                 # field separator for count files or count matrix
-parameters$annotation = "Genes_annotations.txt"       # file containing the functional annotations of each gene
-parameters$geneID2GO_file = "GO_annotations.txt"      # GO annotation files
+parameters$dir_path = "../data"
+parameters$analysis_name = "DE"             # output directory name (default DE_analysis, do not put space!)
+#parameters$fileofcount = "CountsMatrix.txt"           # matrix of count for all samples/conditions
+#parameters$sep = "\t"                                 # field separator for count files or count matrix
+#parameters$annotation = "Genes_annotations.txt"       # file containing the functional annotations of each gene
+parameters$geneID2GO_file = "MmEP.gos"      # GO annotation files
 parameters$contrast_file = "Contrasts.txt"            # matrix of different contrasts desired
-parameters$sample_file = "Samples_CountsMatrix.txt"   # file describing the samples
-parameters$rm_sample = c("AC3R2","BC3R3")             # bad sample(s) !
+parameters$sample_file = "Samples.csv"   # file describing the samples
+parameters$col_genes=1
+parameters$col_counts=3
+parameters$rm_sample = c("Mmr37_w1")             # bad sample(s) !
 
 # Options for data processing and their analyzes
 #--------------------------------------------------------------------------
-parameters$threshold_cpm = 0.5                        # CPM's threshold (default 0.5)
+parameters$threshold_cpm = 0.5                       # CPM's threshold (default 0.5)
 parameters$replicate_cpm = 3                          # Minimum number of replicates (default 3)
 parameters$threshold_FDR = 0.05                       # FDR threshold (default 0.05)
 parameters$threshold_logFC = 0                        # logFC threshold (default 1)
 parameters$normal_method = "TMM"                      # normalization method (TMM/RLE/upperquartile/none) (default TMN)
 parameters$p_adj_method = "BH"                        # p-value adjust method (holm/hochberg/hommel/bonferroni/BH/BY/fdr/none) (default fdr)
-parameters$glm = "lrt"                                # GLM method (lrt/qlf) (default qlf)
+parameters$glm = "qlf"                                # GLM method (lrt/qlf) (default qlf)
 parameters$logFC = TRUE                               # logFC in the summary table (default TRUE)
 parameters$FC = TRUE                                  # FC in the summary table (default TRUE)
 parameters$logCPM = FALSE                             # logCPm in the summary table (default FALSE)
 parameters$FDR = TRUE                                 # FDR in the summary table (default TRUE)
-parameters$LR = TRUE                                  # LR in the summary table (default FALSE)
+parameters$LR = FALSE                                 # LR in the summary table (default FALSE)
 parameters$Sign = TRUE                                # Significance (1/0/-1) in the summary table (default TRUE)
 parameters$Expression = TRUE                          # Significance expression in the summary table (default TRUE)
 parameters$mean_counts = FALSE                        # Mean counts in the summary table (default TRUE)
@@ -67,6 +66,7 @@ cat("\n\nChecking Data content:\n")
 data$samples
 data$contrast
 data$design
+
 head(data$dge$counts,n=4)
 
 cat("Total number of genes : ", dim(data$dge$counts)[1], "\n")
@@ -81,6 +81,9 @@ cat("\nChecking Asko Data : condition, contrast, context.\n")
 asko_data$condition ; cat("\n")
 asko_data$contrast  ; cat("\n")
 asko_data$context   ; cat("\n")
+
+
+write.table(edgeR::cpm(data$dge), file="CPM_all.txt")
 
 ##### filtering #####
 cat("\nFiltering genes with more than ", parameters$threshold_cpm, " CPM in ",parameters$replicate_cpm,"samples\n")
@@ -97,36 +100,10 @@ GEcorr(asko_norm,parameters)
 cat("\n\nDifferential expressions analysis\n")
 resDEG<-DEanalysis(asko_norm, data, asko_data, parameters)
 
-##### Venn diagram #####
-# My list
-parameters$compaVD = c("AC1vsAC2-AC1vsAC3-AC2vsAC3",
-                       "BC1vsBC2-BC1vsBC3-BC2vsBC3",
-                       "AC1vsBC1-AC2vsBC2-AC3vsBC3")
-
-# graph type "all"
-parameters$VD = "all"
-VD(resDEG, parameters, asko_data)
-
-# graph type "up"
-parameters$VD = "up"
-VD(resDEG, parameters, asko_data)
-
-# graph type "down"
-parameters$VD = "down"
-VD(resDEG, parameters, asko_data)
-
-# graph type "both"
-parameters$compaVD = c("AC1vsBC1-AC2vsBC2",
-                       "AC1vsBC1-AC3vsBC3",
-                       "AC2vsBC2-AC3vsBC3")
-parameters$VD = "both"
-VD(resDEG, parameters, asko_data)
-
 ###### UpsetR Graphs #####
 # My list
-parameters$upset_list = c("AC1vsAC2-AC1vsAC3-AC2vsAC3",
-                          "BC1vsBC2-BC1vsBC3-BC2vsBC3",
-                          "AC1vsBC1-AC2vsBC2-AC3vsBC3")
+parameters$upset_list = c("Mmp_1vsMmr_1-Mmp_2vsMmr_2-Mmp_aavsMmr_aa",
+                          "WD1_MmrvsWD2_Mmr-WD1_MmpvsWD2_Mmp-WD1vsWD2")
 
 # graphs type "all"
 parameters$upset_basic = "all"
@@ -149,83 +126,31 @@ parameters$upset_type = "down"
 UpSetGraph(resDEG, data, parameters)
 
 ##### Enrichment Analysis #####
-# Parameters for enrichment
+# Parameters
 #----------------------------------------------------------------------
+
+
 parameters$GO_threshold = 0.05               # the significant threshold used to filter p-values (default 0.05)
+parameters$GO_max_top_terms = 10             # the maximum number of GO terms plot (default 10)
 parameters$GO_min_num_genes = 10             # the minimum number of genes for each GO terms (default 10)
+parameters$GO_min_sig_genes = 0              # the minimum number of significant gene(s) behind the enriched GO-term (default 0)
 parameters$GO = "both"                       # gene set chosen for analysis 'up', 'down', 'both', or NULL (default NULL)
 parameters$GO_algo = "weight01"              # algorithms for runTest function ("classic", "elim", "weight", "weight01", "lea", "parentchild") (default weight01)
 parameters$GO_stats = "fisher"               # statistical tests for runTest function ("fisher", "ks", "t", "globaltest", "sum", "ks.ties") (default fisher)
-
-# Parameters for visualization
-#----------------------------------------------------------------------
 parameters$Ratio_threshold = 1               # the min ratio for display GO in graph (default 0)
-parameters$GO_max_top_terms = 10
-# the maximum number of GO terms plot (default 10)
-parameters$GO_min_sig_genes = 5              # the minimum number of significant gene(s) behind the enriched GO-term in graph (default 0)
-
-# Run analysis on all contrasts
-#----------------------------------------------------------------------
 GOenrichment(resDEG, data, parameters)
 
-# Run analysis on a gene list defined by the user
-#----------------------------------------------------------------------
-list=rownames(resDEG[1:1000,])              # contains a list of genes
-GOenrichment(resDEG, data, parameters, list, "TitleOfTheList")
-
-
-##### Co-Expression Analysis #####
-# Parameters for gene clustering
-#----------------------------------------------------------------------
-parameters$coseq_data = "ExpressionProfiles"     # Perform clustering on transformed profiles based on normalized cpm counts (choose "LogScaledData" if you prefer to clusterize log2cpm counts and don't forget to set coseq_transformation to "none" in this case)
-# parameters$coseq_model = "kmeans"              # (default kmeans)
-# parameters$coseq_transformation = "clr"        # (default clr)
-parameters$coseq_ClustersNb = 4                  # (default : auto (select the best number automatically between 2 to 25))
-parameters$coseq_HeatmapOrderSample = T          # Choose TRUE if you prefer keeping your sample order than clusterizing samples in heatmap  (default FALSE)
-
-# Parameters for for GO enrichment in clusters
-#----------------------------------------------------------------------
-parameters$GO_threshold = 0.05
-parameters$GO_min_num_genes = 10
-parameters$GO_algo = "weight01"
-parameters$GO_stats = "fisher"
-
-### Parameters for visualization
-parameters$Ratio_threshold = 2
-parameters$GO_max_top_terms = 10
-parameters$GO_min_sig_genes = 2
-
-# Run analysis on all DE genes (DE genes in 1 contrast at least)
-#----------------------------------------------------------------------
-clust<-ClustAndGO(asko_norm, resDEG, parameters, data)
-
-
-# Include NON DE genes in an "artificial" cluster in the graphs produced by ClustAndGO
-#----------------------------------------------------------------------
-IncludeNonDEgenes_InClustering(data, asko_norm, resDEG, parameters, clust)
-# Run analysis on a gene list defined by the user
-#----------------------------------------------------------------------
-list=rownames(resDEG[1:1000,])
-ClustAndGO(asko_norm,resDEG,parameters, data, list, "TitleOfTheList")
-
-
-##### Extract specific information on a gene list defined by the user #####
-# -------------------------------------------------------------------------
-list=rownames(resDEG[1:50,])
-
-# Without clustering information
-#----------------------------------------------------------------------
-GeneInfo_OnList(list, resDEG, data, "TitleOfTheList")
-
-# With clustering information (clust object produced by ClustAndGO function)
-#----------------------------------------------------------------------
-GeneInfo_OnList(list, resDEG, data, "TitleOfTheList",  clust)
-
-# With selection of conditions and/or contrasts to be represented in the heatmap (clust object is not mandatory)
-#----------------------------------------------------------------------
-conditionsToDraw = c("AC1", "AC2", "AC3")                 # select conditions
-contrastToDraw = c("AC1vsAC2","AC1vsAC3","AC2vsAC3")      # select contrasts
-GeneInfo_OnList(list, resDEG, data, "TitleOfTheList", clust, contrasts=contrastToDraw)  # graph with selected contrasts and all conditions
-GeneInfo_OnList(list, resDEG, data, "TitleOfTheList", clust, conditions=conditionsToDraw)  # graph with selected conditions and all contrasts
-GeneInfo_OnList(list, resDEG, data, "TitleOfTheList", clust, conditions=conditionsToDraw, contrasts=contrastToDraw) ## graph with selected contrasts and selected conditions
-
+##### HB Graphs
+# 
+GR  <- read.csv('../data/input/GR.txt', header=FALSE) 
+keepGR<-GR$V1[GR$V1 %1in% rownames(resDEG)]
+GeneInfo_OnList(keepGR, resDEG, data, "Gustatory receptors")
+WCP  <- read.csv('../data/input/WCP.txt', header=FALSE)
+keepWCP<-WCP$V1[WCP$V1 %in% rownames(resDEG)]
+GeneInfo_OnList(keepWCP, resDEG, data, "Wing color genes")
+OR  <- read.csv('../data/input/OR.txt') 
+keepWCP<-OR$V1[OR$V1 %in% rownames(resDEG)]
+GeneInfo_OnList(keepOR, resDEG, data, "Olfactory receptors")
+IR <- read.csv('../data/input/IR.txt') 
+keepIR<-OR$V1[IR$V1 %in% rownames(resDEG)]
+GeneInfo_OnList(keepIR, resDEG, data, "Ionotropic receptors")
