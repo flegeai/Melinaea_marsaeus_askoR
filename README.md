@@ -29,8 +29,7 @@ Results will be exported to the _data/DE_ directory :
   -  _data/DE/DEanalysis_/AskoTables : figures of the DE tests by contrasts  (volcano plots and heatmaps of the highly DEGs)
   -  _data/DE/DEanalysis_/GOenrichment/OnContrasts : tables and Bubbles graphs of the GO enrichments
   -  _data/DE/DEanalysis_/UpsetGraphs/Global_upset/ : UpSet plot of the intersections of all the contrasts
-  -  _data/DE/DEanalysis_/UpsetGraphs/Subset_upset/ : Upset plot of the intersections of the Mmp_1vsMmr_1, Mmp_2vsMmr_2 and Mmp_aavsMmr_aa contrasts
-  -  
+  -  _data/DE/DEanalysis_/UpsetGraphs/Subset_upset/ : Upset plot of the intersections of the Mmp_1vsMmr_1, Mmp_2vsMmr_2 and Mmp_aavsMmr_aa contrasts 
 ### License
 
 The coseq package is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License, version 3, as published by the Free Software Foundation.
