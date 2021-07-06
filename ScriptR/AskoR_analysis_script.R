@@ -143,7 +143,7 @@ GOenrichment(resDEG, data, parameters)
 ##### HB Graphs
 # 
 GR  <- read.csv('../data/input/GR.txt', header=FALSE) 
-keepGR<-GR$V1[GR$V1 %1in% rownames(resDEG)]
+keepGR<-GR$V1[GR$V1 %in% rownames(resDEG)]
 GeneInfo_OnList(keepGR, resDEG, data, "Gustatory receptors")
 WCP  <- read.csv('../data/input/WCP.txt', header=FALSE)
 keepWCP<-WCP$V1[WCP$V1 %in% rownames(resDEG)]
