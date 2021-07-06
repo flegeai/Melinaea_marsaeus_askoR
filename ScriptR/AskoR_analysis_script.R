@@ -139,18 +139,3 @@ parameters$GO_algo = "weight01"              # algorithms for runTest function (
 parameters$GO_stats = "fisher"               # statistical tests for runTest function ("fisher", "ks", "t", "globaltest", "sum", "ks.ties") (default fisher)
 parameters$Ratio_threshold = 1               # the min ratio for display GO in graph (default 0)
 GOenrichment(resDEG, data, parameters)
-
-##### HB Graphs
-# 
-GR  <- read.csv('../data/input/GR.txt', header=FALSE) 
-keepGR<-GR$V1[GR$V1 %in% rownames(resDEG)]
-GeneInfo_OnList(keepGR, resDEG, data, "Gustatory receptors")
-WCP  <- read.csv('../data/input/WCP.txt', header=FALSE)
-keepWCP<-WCP$V1[WCP$V1 %in% rownames(resDEG)]
-GeneInfo_OnList(keepWCP, resDEG, data, "Wing color genes")
-OR  <- read.csv('../data/input/OR.txt') 
-keepWCP<-OR$V1[OR$V1 %in% rownames(resDEG)]
-GeneInfo_OnList(keepOR, resDEG, data, "Olfactory receptors")
-IR <- read.csv('../data/input/IR.txt') 
-keepIR<-OR$V1[IR$V1 %in% rownames(resDEG)]
-GeneInfo_OnList(keepIR, resDEG, data, "Ionotropic receptors")
