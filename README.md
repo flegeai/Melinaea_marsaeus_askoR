@@ -25,12 +25,13 @@ Results will be exported to the _data/DE_ directory :
   - DE_CPM_NormMeancounts.txt : TMM normalized CPM for all genes and conditions 
   - DE_summary.txt : Differential expression tests for all genes and contratst (0 not DE, 1 upregulated, -1 down regulated) with FDR  < 0.05 
   -  _data/DE/DataExplore_ : directory including the figures  of the filtering steps (barplot) and correlation analyses (Correlogram, heatmaps, clustering and MDS) 
-  -  _data/DE/DEanalysis_/AskoTables : directory including all the results tables by contrasts (genes and tests values (fold changee,  pvalues, FDR)  
-  -  _data/DE/DEanalysis_/AskoTables : figures of the DE tests by contrasts  (volcano plots and heatmaps of the highly DEGs)
-  -  _data/DE/DEanalysis_/GOenrichment/OnContrasts : tables and Bubbles graphs of the GO enrichments
-  -  _data/DE/DEanalysis_/UpsetGraphs/Global_upset/ : UpSet plot of the intersections of all the contrasts
-  -  _data/DE/DEanalysis_/UpsetGraphs/Subset_upset/ : Upset plot of the intersections of the Mmp_1vsMmr_1, Mmp_2vsMmr_2 and Mmp_aavsMmr_aa contrasts
-  -  
+  -  _data/DE/DEanalysis/AskoTables_ : directory including all the results tables by contrasts (genes and tests values (fold changee,  pvalues, FDR)  
+  -  _data/DE/DEanalysis/figures_ : figures of the DE tests by contrasts  (volcano plots and heatmaps of the highly DEGs)
+  -  _data/DE/GOenrichment/OnContrasts_ : tables and Bubbles graphs of the GO enrichments
+  -  _data/DE/UpsetGraphs/Global_upset/_ : UpSet plot of the intersections of all the contrasts
+  -  _data/DE/UpsetGraphs/Subset_upset/_ : Upset plot of the intersections of the Mmp_1vsMmr_1, Mmp_2vsMmr_2 and Mmp_aavsMmr_aa contrasts 
+  -  _data/DE/GeneListExplore/GeneListExplore_ : Gene list plot with heatmap and DEG
+
 ### License
 
 The coseq package is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License, version 3, as published by the Free Software Foundation.
